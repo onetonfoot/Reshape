@@ -1,0 +1,8 @@
+name = "Reshape"
+uuid = "63661066-680d-11e9-229a-3f2b14e5b507"
+authors = ["onetonfoot <onetonfoot@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+MLStyle = "d8e11817-5142-5d16-987a-aa16d5891078"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
