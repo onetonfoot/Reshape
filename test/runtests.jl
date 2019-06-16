@@ -1,5 +1,5 @@
 using Test, Reshape, MLStyle, Base.Meta
-import Reshape: hasreshape, haspermute, getreshapedims, getpermutedims
+import Reshape: hasreshape, haspermute, hascat, getreshapedims, getpermutedims
 
 #Unit Tests
 
@@ -28,9 +28,44 @@ end
     end
 end
 
+@testset "hascat" begin
+
+    @testset "true" begin
+        @test hascat(:(B[k,j,i] = A[i,j][k]))
+    end
+
+    @testset "false" begin
+        @test !hascat(:(B[k,j,i] = A[i,j,k]))
+    end
+end
+
 #TODO add test for getreshapedims, getpermutedims
 
+@testset "getpermutedims" begin
+    @testset "simple expr" begin
+        @test getpermutedims(:(B[k,j,i] = A[i,j,k])) == (3,2,1)
+        # @test getpermutedims(:(B[k,j,i] = A[i][j,k])) == (3,2,1)
+    end
+end
+
 #Intergration test
+
+@testset "cat" begin
+    @testset "simple cat" begin
+        A = [ rand(5,5) for _ in 1:5 ]
+        B = cat(A... ; dims=3)
+        @permute C[i,j,k] = A[i,j][k]
+        @test C == B
+    end
+
+    @testset "cat and add dim" begin
+        A = [ rand(5,5) for _ in 1:5 ]
+        B = cat(A... ; dims=3)
+        B = reshape(B, 5 ,1, 5, 5)
+        @permute C[i,_ , j, k] = A[i,j][k]
+        @test C == B
+    end
+end
 
 @testset "permutation" begin
     @testset "Two dims" begin
